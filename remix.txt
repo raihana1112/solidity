@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.6.12 <0.9.0;
+
+contract eVoting{
+  struct Candidate{
+    uint id;
+    string name;
+    uint votecount;
+  }
+
+  uint public CandidatesCount;
+  mapping(uint=>Candidate) public candidate;
+  mapping(address=>bool) public votedornot;
+  
+  event electionupdated(uint id, string name, uint votecount);
+  constructor(){
+    addCandidate("DEMA");
+    addCandidate("SEMA");
+  }
+  function addCandidate(string memory name) private{
+    CandidatesCount++;
+    candidate[CandidatesCount] = Candidate(CandidatesCount, name, 0);
+  }
+
+  function Vote(uint _id) public{
+    require(!votedornot[msg.sender], 'kamu telah memilih');
+    require(candidate[_id].id != 0, 'id tidak ditemukan');
+
+    candidate[_id].votecount+=1;
+    votedornot[msg.sender]=true;
+    emit electionupdated(_id, candidate[_id].name, candidate[_id].votecount);
+  }
+
+}
+20.10 02/06/2024
